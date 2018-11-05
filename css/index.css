@@ -1,0 +1,40 @@
+#footer {
+    padding: 20px;
+}
+
+#buttons {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#jumbo {
+    background-image: linear-gradient(to bottom, #d1c4e9, #fff);
+    background-image: -moz-linear-gradient(to bottom, #d1c4e9, #fff);
+    background-image: -o-linear-gradient(to bottom, #d1c4e9, #fff);
+    background-image: -webkit-linear-gradient(to bottom, #d1c4e9, #fff);
+    min-height: 375px;
+    margin-bottom: 20px;
+    padding-top: 20px;
+}
+
+pre {
+    color: #dbdbdb;
+}
+
+#animation {
+    padding-top: 20px;
+}
+
+#mainHeading {
+    padding-top: 30px;
+}
+
+h1 {
+    /* font-size: 3rem; */
+    font-weight: 600;
+}
+
+#moreText {
+    /* margin-top: 50px; */
+    margin-bottom: 50px;
+}

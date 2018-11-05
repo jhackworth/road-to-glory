@@ -1,0 +1,275 @@
+<html>
+
+<head>
+    <title>Road to Glory</title>
+    <link rel="icon" href="star-eyes.png" type="image/png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <script src="js/vue.min.js"></script>
+    <link rel="stylesheet" href="css/gdemo.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/prism.css">
+    <link rel="stylesheet" href="css/index.css">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128375337-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-128375337-1');
+    </script>
+
+</head>
+
+<body>
+
+    <!-- Splash -->
+    <div class="container-fluid" id="jumbo">
+        <div class="row">
+            <section class="col text-center" id="mainHeading">
+                <!-- <h1>The easy way to get started with Glorious Demos</h1> -->
+            </section>
+        </div>
+        <div class="row">
+            <section class="col"></section>
+            <section class="col-md-5">
+                <div id="animation"></div>
+            </section>
+            <section class="col"></section>
+        </div>
+        <!-- <div class="row">
+            <section class="col text-center">
+                <p class="lead">faskdj faksdjfjasdf lkandsflkasdnf</p>
+            </section>
+        </div> -->
+    </div>
+
+    <div class="container">
+        <div class="row text-center">
+            <section class="col"></section>
+            <section class="col-md-8" id="moreText">
+                <h1 class="">
+                    Start animating your code with <a href="https://glorious.codes/demo" target="_blank">Glorious Demos</a>. Use the builder to get started!
+                </h1>
+            </section>
+            <section class="col"></section>
+        </div>
+    </div>
+
+    <!-- Main Section -->
+    <main class="container" id="dynamicGDContainer">
+        <div class="row">
+
+            <!-- Left Section -->
+            <section class="col-md-6">
+
+                <form @submit.prevent="createAction(actionConfig.actionType)">
+                    <h4>Window Setup</h4>
+                    <div class="form-row">
+                        <div class="form-group col-md-2">
+                            <label for="winType">Type</label>
+                            <select id="winType" class="form-control" v-model="appType">
+                                <option value="editor">Editor</option>
+                                <option value="terminal">Terminal</option>
+                            </select>
+                        </div>
+                        <div class="form-group col">
+                            <label for="winTitle">Window Title</label>
+                            <input type="text" id="winTitle" class="form-control" v-model="appOptions.winTitle">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="winHeight">Height</label>
+                            <div class="input-group">
+                                <input type="number" id="winHeight" class="form-control" v-model="appOptions.winHeight">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="winHeight">px</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col">
+                            <label for="prompt1">Opening Prompt</label>
+                            <input type="text" id="prompt1" class="form-control" v-model="appOptions.promptString"
+                                :disabled="disablePromptStringFieldWindow">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="delay1">Delay After</label>
+                            <div class="input-group">
+                                <input type="number" id="delay1" class="form-control" v-model="appOptions.onCompleteDelay">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="delay1">ms</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <h4>Action Details</h4>
+                    <div class="form-row">
+                        <div class="form-group col-md-2">
+                            <label for="actionType">Type</label>
+                            <select id="actionType" :class="invalidateActionTypes" v-model="actionConfig.actionType">
+                                <option value="write">Write</option>
+                                <option value="command">Command</option>
+                                <option value="respond">Respond</option>
+                            </select>
+                        </div>
+                        <div class="form-group col">
+                            <label for="prompt2">New Prompt</label>
+                            <input type="text" id="prompt2" class="form-control" v-model="actionConfig.newPrompt"
+                                :placeholder="appOptions.promptString" :disabled="disablePromptStringFieldAction">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="delay2">Delay After</label>
+                            <div class="input-group">
+                                <input type="number" id="delay2" class="form-control" v-model="actionConfig.newDelay"
+                                    :placeholder="appOptions.onCompleteDelay">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="delay2">ms</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col">
+                            <label for="actionInput">Input</label>
+                            <textarea id="actionInput" rows="6" class="form-control"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="highlight" v-model="actionConfig.highlightCode">
+                                <label class="form-check-label" for="highlight">Highlight Syntax</label>
+                            </div>
+                        </div>
+                        <div class="form-group col text-right">
+                            <select id="inputLang" :class="invalidateHighlight" :hidden="disableHighlightLangs" v-model="actionConfig.highlightLang">
+                                <!-- <option value='bash'>Bash</option>
+                                <option value='css'>CSS</option>
+                                <option value='git'>Git</option>
+                                <option value='http'>HTTP</option> -->
+                                <option value='javascript'>JavaScript</option>
+                                <!-- <option value='json'>JSON</option>
+                                <option value='markdown'>Markdown</option>
+                                <option value='php'>PHP</option>
+                                <option value='python'>Python</option>
+                                <option value='r'>R</option>
+                                <option value='ruby'>Ruby</option>
+                                <option value='sql'>SQL</option>
+                                <option value='swift'>Swift</option>
+                                <option value='typescript'>TypeScript</option> -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div v-if="editing.status">
+                        <button type="submit" class="btn btn-primary">Update Action</button>
+                        <button class="btn btn-danger" @click="deleteAction(editing.index)">Delete</button>
+                        <button class="btn btn-link" @click="editActionForm('clear')">Cancel</button>
+                    </div>
+                    <div v-else>
+                        <button type="submit" class="btn btn-primary">Add Action</button>
+                        <button class="btn btn-link" @click="editActionForm('clear')">Cancel</button>
+                    </div>
+                </form>
+
+            </section>
+
+            <!-- Right Section -->
+            <section class="col-md-6">
+
+                <!-- Table -->
+                <table class="table table-hover table-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 15%">Type</th>
+                            <th scope="col" style="width: 60%">Text</th>
+                            <th scope="col" style="width: 15%">Delay</th>
+                            <th scope="col" style="width: 10%"></th>
+                        </tr>
+                    </thead>
+                    <tbody v-if="rawActions.length > 0">
+                        <tr v-for="(a, index) in rawActions" :class="index == editing.index ? 'table-warning' : ''">
+                            <td class="align-middle">{{a.type}}</td>
+                            <td class="align-middle">
+                                {{a.val.length > 40 ? a.val.substring(0, 39) + '...' : a.val}}
+                            </td>
+                            <td class="align-middle">{{a.delay}}ms</td>
+                            <td class="align-middle">
+                                <button class="btn btn-outline-warning btn-sm" @click="editAction(index)">Edit</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody v-else>
+                        <tr>
+                            <td class="text-center" colspan="4">No actions yet!</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Start Over Button -->
+                <div class="text-center" v-if="rawActions.length > 0">
+                    <button class="btn btn-danger btn-sm" @click="startOver">Start Over</button>
+                </div>
+
+            </section>
+
+        </div>
+
+        <!-- Bottom Row -->
+        <div class="row" id="buttons">
+            <section class="col-md-8 offset-md-2 text-center">
+                <button class="btn btn-info btn-lg" @click="compileFunction('preview')">Preview</button>
+                <!-- <button class="btn btn-success btn-lg" id="copyBtn">Copy Code</button> -->
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-light" id="footer">
+        <div class="container-fluid">
+            <div class="col text-center">
+                <p class="lead">
+                    made by <a href="https://twitter.com/jnthnhw" target="_blank">@jnthnhw</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/prism.js"></script>
+    <script src="js/gdemo.min.css"></script>
+    <script>
+        const gDemo = new GDemo('#animation');
+
+        const code = 'console.log("Hello World!");'
+
+        const highlightedCode = Prism.highlight(
+            code,
+            Prism.languages.javascript,
+            'javascript'
+        );
+
+        gDemo
+            .openApp('editor', {
+                minHeight: '250px',
+                windowTitle: 'demo.js'
+            })
+            .write(highlightedCode, {
+                onCompleteDelay: 2000
+            })
+            .end();
+    </script>
+    <script src="js/main.js"></script>
+    <script src="js/clipboard.min.js"></script>
+    <script>var clipboard = new ClipboardJS('#copyBtn');</script>
+
+</body>
+
+</html>
