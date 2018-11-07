@@ -50,7 +50,7 @@
             <section class="col"></section>
             <section class="col-md-8" id="moreText">
                 <h1 class="">
-                    Start animating your code with <a href="https://glorious.codes/demo" target="_blank">Glorious Demos</a>. Use the builder to get started!
+                    Animate your code with <a href="https://glorious.codes/demo" target="_blank">Glorious Demos</a>. Use the builder to get started!
                 </h1>
             </section>
             <section class="col"></section>
@@ -59,12 +59,24 @@
 
     <!-- Main Section -->
     <main class="container" id="dynamicGDContainer">
+
+        <!-- Examples Row -->
+        <div class="row" id="exRow">
+            <div class="col text-center ">
+                <p class="lead">Try an example:</p> 
+                <button class="btn btn-warning" @click="loadExample('nodecron')">node-cron</button>
+                <button class="btn btn-success" @click="loadExample('wedeploy')">WeDeploy</button>
+                <button class="btn btn-info" @click="loadExample('stripe')">Stripe</button>
+            </div>
+        </div>
+        
+
         <div class="row">
 
             <!-- Left Section -->
             <section class="col-md-6">
 
-                <form @submit.prevent="createAction(actionConfig.actionType)">
+                <form @submit.prevent="">
                     <h4>Window Setup</h4>
                     <div class="form-row">
                         <div class="form-group col-md-2">
@@ -104,6 +116,16 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div v-if="editing.status && editing.type == 'window'">
+                        <button type="submit" class="btn btn-primary" @click="createAction('window')">Update Window</button>
+                        <button class="btn btn-danger" @click="deleteAction(editing.index)">Delete</button>
+                        <button class="btn btn-link" @click="editActionForm('clear')">Cancel</button>
+                    </div>
+                    <div v-else>
+                        <button type="submit" class="btn btn-primary" @click="createAction('window')">Add Window</button>
+                        <button class="btn btn-link" @click="editActionForm('clear')">Cancel</button>
                     </div>
 
                     <hr>
@@ -169,13 +191,13 @@
                         </div>
                     </div>
 
-                    <div v-if="editing.status">
-                        <button type="submit" class="btn btn-primary">Update Action</button>
+                    <div v-if="editing.status && editing.type != 'window'">
+                        <button type="submit" class="btn btn-primary" @click="createAction(actionConfig.actionType)">Update Action</button>
                         <button class="btn btn-danger" @click="deleteAction(editing.index)">Delete</button>
                         <button class="btn btn-link" @click="editActionForm('clear')">Cancel</button>
                     </div>
                     <div v-else>
-                        <button type="submit" class="btn btn-primary">Add Action</button>
+                        <button type="submit" class="btn btn-primary" @click="createAction(actionConfig.actionType)">Add Action</button>
                         <button class="btn btn-link" @click="editActionForm('clear')">Cancel</button>
                     </div>
                 </form>
@@ -184,7 +206,6 @@
 
             <!-- Right Section -->
             <section class="col-md-6">
-
                 <!-- Table -->
                 <table class="table table-hover table-sm">
                     <thead>
@@ -198,12 +219,13 @@
                     <tbody v-if="rawActions.length > 0">
                         <tr v-for="(a, index) in rawActions" :class="index == editing.index ? 'table-warning' : ''">
                             <td class="align-middle">{{a.type}}</td>
-                            <td class="align-middle">
+                            <td class="align-middle" v-if="a.type != 'window'">
                                 {{a.val.length > 40 ? a.val.substring(0, 39) + '...' : a.val}}
                             </td>
-                            <td class="align-middle">{{a.delay}}ms</td>
+                            <td v-else></td>
+                            <td class="align-middle">{{ (a.onCompleteDelay) ? a.onCompleteDelay : a.delay}}ms</td>
                             <td class="align-middle">
-                                <button class="btn btn-outline-warning btn-sm" @click="editAction(index)">Edit</button>
+                                <button class="btn btn-outline-warning btn-sm" @click="editAction(index, a.type)">Edit</button>
                             </td>
                         </tr>
                     </tbody>
@@ -216,7 +238,8 @@
 
                 <!-- Start Over Button -->
                 <div class="text-center" v-if="rawActions.length > 0">
-                    <button class="btn btn-danger btn-sm" @click="startOver">Start Over</button>
+                    <button class="btn btn-info btn" @click="compileFunction('preview')">Preview</button>
+                    <button class="btn btn-danger btn" @click="startOver">Start Over</button>
                 </div>
 
             </section>
@@ -226,7 +249,7 @@
         <!-- Bottom Row -->
         <div class="row" id="buttons">
             <section class="col-md-8 offset-md-2 text-center">
-                <button class="btn btn-info btn-lg" @click="compileFunction('preview')">Preview</button>
+                <!-- <button class="btn btn-info btn-lg" @click="compileFunction('preview')">Preview</button> -->
                 <!-- <button class="btn btn-success btn-lg" id="copyBtn">Copy Code</button> -->
             </section>
         </div>
